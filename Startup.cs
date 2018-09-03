@@ -23,7 +23,7 @@ namespace Secrets
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DojoContext>(options => options.UseNpgsql(Configuration["DBInfo:ConnectionString"]));
+            services.AddDbContext<DojoContext>(options => options.UseMySQL(Configuration["DBInfo2:ConnectionString"]));
             services.AddSession();
             services.AddMvc();
         }
