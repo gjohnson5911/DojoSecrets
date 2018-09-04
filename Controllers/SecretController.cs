@@ -125,14 +125,10 @@ namespace Secrets.Controllers
             //add secret to DB and savechanges
             context.Secrets.Add(newSecret);
             context.SaveChanges();
-            //retrieve secret by created_at and add id to new Like
-            Secret thisSecret = context.Secrets.FirstOrDefault(s=>s.Created_At == newSecret.Created_At);
             //created user automatically likes their secret, so a like link needs to be established
             Like newLike = new Like {
                 UserId = userId,
-                User = thisUser,
-                SecretId = thisSecret.Id,
-                Secret = thisSecret,
+                SecretId = newSecret.Id,
                 Created_At = DateTime.Now,
                 Updated_At = DateTime.Now
             };
@@ -140,11 +136,9 @@ namespace Secrets.Controllers
             context.Likes.Add(newLike);
             context.SaveChanges();
             //retrieve like from DB and add to thisSecret and thisUser's List of likes
-            Like thisLike = context.Likes.FirstOrDefault(l=>l.Created_At == newLike.Created_At);
-            thisUser.SecretsLiked.Add(thisLike);
-            thisSecret.LikedUsers.Add(thisLike);
+            thisUser.SecretsLiked.Add(newLike);
+            newSecret.LikedUsers.Add(newLike);
             context.SaveChanges();
-
             return RedirectToAction("secrets");
         }
 
@@ -179,10 +173,9 @@ namespace Secrets.Controllers
             //Add like to DB and savechanges
             context.Likes.Add(newLike);
             context.SaveChanges();
-            //retrieve like from DB and add to thisSecret and thisUser's list of likes, then savechanges
-            Like thisLike = context.Likes.FirstOrDefault(l=> l.Created_At == newLike.Created_At);
-            thisUser.SecretsLiked.Add(thisLike);
-            thisSecret.LikedUsers.Add(thisLike);
+            //add to thisSecret and thisUser's list of likes, then savechanges
+            thisUser.SecretsLiked.Add(newLike);
+            thisSecret.LikedUsers.Add(newLike);
             thisSecret.Likes++;
             context.SaveChanges();
             //redirect to secrets
