@@ -194,5 +194,13 @@ namespace Secrets.Controllers
             ViewBag.Secrets = secrets;
             return View();
         }
+
+        [HttpGet("logout")]
+        public IActionResult Logout()
+        {
+            //log current user out and return to logreg
+            HttpContext.Session.Clear();
+            return RedirectToAction("Home");
+        }
     }
 }
